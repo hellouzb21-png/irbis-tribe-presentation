@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IRBIS TRIBE — Biz Signalmiz</title>
+  <meta name="description" content="Irbis Tribe — motivatsiya, jamoaviy reja, birlashish mexanizmi va yangi Sayohat klubi taqdimoti." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #050510; color: #e0e0e0; font-family: 'Rajdhani', sans-serif; }
+
+    /* ===== GLOBAL GLOW VARS ===== */
+    :root {
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff00aa;
+      --neon-gold: #ffcc00;
+      --neon-green: #39ff14;
+      --bg-dark: #050510;
+      --bg-card: rgba(10, 10, 30, 0.85);
+      --glass: rgba(255,255,255,0.04);
+    }
+
+    /* ===== BACKGROUND GRID ===== */
+    #bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ===== FLOATING PARTICLES ===== */
+    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: var(--neon-cyan);
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.3; }
+      100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+    }
+
+    /* ===== SCANLINE ===== */
+    #scanline {
+      position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      background: repeating-linear-gradient(
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.05) 2px,
+        rgba(0,0,0,0.05) 4px
+      );
+    }
+
+    /* ===== SLIDES CONTAINER ===== */
+    #slides-wrapper {
+      position: relative; width: 100%; height: 100%; z-index: 1;
+    }
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 60px 8%;
+      opacity: 0;
+      transform: scale(0.92) translateY(30px);
+      transition: opacity 0.7s cubic-bezier(.4,0,.2,1), transform 0.7s cubic-bezier(.4,0,.2,1);
+      pointer-events: none;
+      text-align: center;
+    }
+    .slide.active {
+      opacity: 1; transform: scale(1) translateY(0); pointer-events: all;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    .slide-number {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 13px; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--neon-cyan); opacity: 0.5;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900; font-size: clamp(28px, 5vw, 60px);
+      line-height: 1.15;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 0 20px rgba(0,240,255,0.3));
+    }
+    .subtitle {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700; font-size: clamp(14px, 2vw, 22px);
+      letter-spacing: 6px; text-transform: uppercase;
+      color: var(--neon-magenta); opacity: 0.8;
+      margin-bottom: 20px;
+    }
+    .body-text {
+      font-size: clamp(16px, 2.2vw, 22px);
+      line-height: 1.75; max-width: 800px;
+      color: rgba(224,224,224,0.85);
+      font-weight: 400;
+    }
+    .body-text strong { color: var(--neon-cyan); font-weight: 600; }
+    .body-text em { color: var(--neon-gold); font-style: normal; font-weight: 600; }
+
+    /* ===== VISUAL ELEMENTS ===== */
+    .neon-line {
+      width: 120px; height: 2px; margin: 20px auto;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      box-shadow: 0 0 12px var(--neon-cyan);
+    }
+
+    /* ===== SLIDE 1 — HERO ===== */
+    #slide-1 .hero-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900; font-size: clamp(50px, 10vw, 120px);
+      letter-spacing: 16px;
+      color: #fff;
+      text-shadow:
+        0 0 10px var(--neon-cyan),
+        0 0 30px var(--neon-cyan),
+        0 0 60px var(--neon-cyan),
+        0 0 100px rgba(0,240,255,0.4);
+      animation: pulseGlow 3s ease-in-out infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px var(--neon-cyan), 0 0 60px var(--neon-cyan); }
+      50% { text-shadow: 0 0 20px var(--neon-cyan), 0 0 60px var(--neon-cyan), 0 0 120px var(--neon-cyan), 0 0 180px rgba(0,240,255,0.3); }
+    }
+    #slide-1 .tagline {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(16px, 2.5vw, 28px);
+      letter-spacing: 8px; font-weight: 700;
+      color: var(--neon-magenta);
+      text-shadow: 0 0 20px rgba(255,0,170,0.5);
+      margin-bottom: 32px;
+    }
+    #slide-1 .hero-desc {
+      font-size: clamp(14px, 1.8vw, 20px);
+      color: rgba(224,224,224,0.7);
+      max-width: 700px; line-height: 1.8;
+    }
+    #slide-1 .hero-desc span { color: var(--neon-cyan); font-weight: 600; }
+
+    /* ===== SLIDE 3 — NETWORK ===== */
+    .network-visual {
+      position: relative; width: 300px; height: 200px; margin: 24px auto;
+    }
+    .node {
+      position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0,240,255,0.3);
+      animation: nodePulse 2s ease-in-out infinite;
+    }
+    .node:nth-child(1) { top: 20%; left: 50%; animation-delay: 0s; }
+    .node:nth-child(2) { top: 50%; left: 15%; animation-delay: 0.3s; }
+    .node:nth-child(3) { top: 50%; left: 85%; animation-delay: 0.6s; }
+    .node:nth-child(4) { top: 80%; left: 30%; animation-delay: 0.9s; }
+    .node:nth-child(5) { top: 80%; left: 70%; animation-delay: 1.2s; }
+    @keyframes nodePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 10px var(--neon-cyan); }
+      50% { transform: scale(1.4); box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px rgba(0,240,255,0.4); }
+    }
+    .network-visual svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+    .network-visual svg line {
+      stroke: var(--neon-cyan); stroke-width: 1; opacity: 0.3;
+    }
+
+    /* ===== SLIDE 4 — THREE PILLARS ===== */
+    .pillars {
+      display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap; justify-content: center;
+    }
+    .pillar {
+      background: var(--bg-card);
+      border: 1px solid rgba(0,240,255,0.15);
+      border-radius: 12px; padding: 28px 24px;
+      width: 240px; text-align: center;
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .pillar:hover {
+      transform: translateY(-6px);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 30px rgba(0,240,255,0.15);
+    }
+    .pillar-icon {
+      font-size: 36px; margin-bottom: 12px;
+    }
+    .pillar h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px; font-weight: 700;
+      color: var(--neon-cyan); letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    .pillar p {
+      font-size: 14px; line-height: 1.6; color: rgba(224,224,224,0.7);
+    }
+
+    /* ===== SLIDE 5/6 — FEATURE SLIDES ===== */
+    .feature-icon {
+      font-size: 64px; margin-bottom: 16px;
+      filter: drop-shadow(0 0 20px rgba(0,240,255,0.5));
+    }
+
+    /* ===== SLIDE 8 — TRAVEL CLUB ===== */
+    .travel-visual {
+      position: relative; margin: 24px auto; width: 320px; height: 160px;
+    }
+    .mountain {
+      position: absolute; bottom: 0;
+    }
+    .mountain-1 {
+      left: 20%; width: 0; height: 0;
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+      border-bottom: 120px solid rgba(0,240,255,0.08);
+      filter: drop-shadow(0 0 10px rgba(0,240,255,0.2));
+    }
+    .mountain-2 {
+      left: 45%; width: 0; height: 0;
+      border-left: 60px solid transparent;
+      border-right: 60px solid transparent;
+      border-bottom: 90px solid rgba(255,0,170,0.08);
+      filter: drop-shadow(0 0 10px rgba(255,0,170,0.2));
+    }
+    .horizon-line {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-magenta), transparent);
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+    .silhouettes {
+      position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px;
+    }
+    .person {
+      width: 6px; height: 20px; background: rgba(255,255,255,0.6);
+      border-radius: 3px 3px 0 0;
+      position: relative;
+    }
+    .person::before {
+      content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+    }
+
+    /* ===== SLIDE 9 — CYCLE ===== */
+    .cycle-container {
+      position: relative; width: 280px; height: 280px; margin: 24px auto;
+    }
+    .cycle-ring {
+      position: absolute; inset: 0;
+      border: 2px solid rgba(0,240,255,0.2);
+      border-radius: 50%;
+      animation: rotateSlow 12s linear infinite;
+    }
+    @keyframes rotateSlow { 100% { transform: rotate(360deg); } }
+    .cycle-node {
+      position: absolute; width: 90px; text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; padding: 10px 6px;
+      border: 1px solid; border-radius: 8px;
+      -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .cycle-node.cn1 {
+      top: -20px; left: 50%; transform: translateX(-50%);
+      color: var(--neon-cyan); border-color: rgba(0,240,255,0.4);
+      background: rgba(0,240,255,0.06);
+    }
+    .cycle-node.cn2 {
+      bottom: 20px; left: -30px;
+      color: var(--neon-gold); border-color: rgba(255,204,0,0.4);
+      background: rgba(255,204,0,0.06);
+    }
+    .cycle-node.cn3 {
+      bottom: 20px; right: -30px;
+      color: var(--neon-green); border-color: rgba(57,255,20,0.4);
+      background: rgba(57,255,20,0.06);
+    }
+    .cycle-arrow {
+      position: absolute;
+      font-size: 20px;
+    }
+    .cycle-arrow.ca1 { top: 30%; right: 10px; color: var(--neon-cyan); transform: rotate(120deg); }
+    .cycle-arrow.ca2 { bottom: 5%; left: 50%; transform: translateX(-50%); color: var(--neon-gold); }
+    .cycle-arrow.ca3 { top: 30%; left: 10px; color: var(--neon-green); transform: rotate(-120deg); }
+
+    /* ===== SLIDE 10 — CTA ===== */
+    .cta-btn {
+      display: inline-block; margin-top: 32px; padding: 16px 48px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #fff; background: transparent;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 4px; cursor: pointer;
+      text-decoration: none;
+      position: relative; overflow: hidden;
+      transition: all 0.3s;
+      box-shadow: 0 0 15px rgba(0,240,255,0.2), inset 0 0 15px rgba(0,240,255,0.1);
+    }
+    .cta-btn:hover {
+      background: rgba(0,240,255,0.1);
+      box-shadow: 0 0 40px rgba(0,240,255,0.4), inset 0 0 30px rgba(0,240,255,0.15);
+      transform: translateY(-2px);
+    }
+    .cta-btn::before {
+      content: ''; position: absolute; top: -2px; left: -100%; width: 100%; height: calc(100% + 4px);
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.3), transparent);
+      animation: shimmer 3s linear infinite;
+    }
+    @keyframes shimmer { 100% { left: 200%; } }
+
+    /* ===== NAVIGATION ===== */
+    #nav {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      z-index: 100; display: flex; gap: 10px; align-items: center;
+      background: rgba(5,5,16,0.8); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      padding: 10px 20px; border-radius: 50px;
+      border: 1px solid rgba(0,240,255,0.1);
+    }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(0,240,255,0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .nav-dot.active {
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+      transform: scale(1.3);
+    }
+    .nav-dot:hover:not(.active) {
+      background: rgba(0,240,255,0.3);
+    }
+    .nav-arrow {
+      width: 32px; height: 32px;
+      background: transparent; border: 1px solid rgba(0,240,255,0.3);
+      border-radius: 50%; cursor: pointer; color: var(--neon-cyan);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .nav-arrow:hover {
+      background: rgba(0,240,255,0.1);
+      box-shadow: 0 0 15px rgba(0,240,255,0.3);
+    }
+
+    /* ===== SLIDE COUNTER ===== */
+    #slide-counter {
+      position: fixed; top: 24px; right: 32px; z-index: 100;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px; color: rgba(0,240,255,0.4);
+      letter-spacing: 2px;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 2px; z-index: 100;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+      box-shadow: 0 0 10px var(--neon-cyan);
+      transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ===== BULLET LIST STYLE ===== */
+    .bullet-list {
+      text-align: left; max-width: 700px; margin: 16px auto 0;
+    }
+    .bullet-list li {
+      list-style: none; position: relative; padding-left: 24px;
+      margin-bottom: 12px; font-size: clamp(15px, 2vw, 20px);
+      line-height: 1.6; color: rgba(224,224,224,0.85);
+    }
+    .bullet-list li::before {
+      content: '▸'; position: absolute; left: 0;
+      color: var(--neon-cyan); font-weight: bold;
+    }
+    .bullet-list li strong { color: var(--neon-cyan); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .slide { padding: 40px 6%; }
+      .pillars { flex-direction: column; align-items: center; }
+      .pillar { width: 90%; max-width: 300px; }
+      .network-visual { width: 220px; height: 150px; }
+      .cycle-container { width: 220px; height: 220px; }
+      #nav { padding: 8px 14px; gap: 6px; }
+    }
+
+    /* ===== ENTRANCE ANIMATIONS ===== */
+    .slide.active .slide-number,
+    .slide.active h1,
+    .slide.active .subtitle,
+    .slide.active .neon-line,
+    .slide.active .body-text,
+    .slide.active .hero-logo,
+    .slide.active .tagline,
+    .slide.active .hero-desc,
+    .slide.active .pillars,
+    .slide.active .feature-icon,
+    .slide.active .network-visual,
+    .slide.active .travel-visual,
+    .slide.active .cycle-container,
+    .slide.active .bullet-list,
+    .slide.active .cta-btn {
+      animation: fadeSlideUp 0.8s cubic-bezier(.4,0,.2,1) backwards;
+    }
+    .slide.active h1 { animation-delay: 0.1s; }
+    .slide.active .subtitle { animation-delay: 0.15s; }
+    .slide.active .neon-line { animation-delay: 0.2s; }
+    .slide.active .body-text { animation-delay: 0.3s; }
+    .slide.active .pillars { animation-delay: 0.35s; }
+    .slide.active .feature-icon { animation-delay: 0.15s; }
+    .slide.active .network-visual { animation-delay: 0.35s; }
+    .slide.active .bullet-list { animation-delay: 0.35s; }
+    .slide.active .cta-btn { animation-delay: 0.45s; }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background effects -->
+<div id="bg-grid"></div>
+<div id="particles"></div>
+<div id="scanline"></div>
+
+<!-- Progress bar -->
+<div id="progress" style="width: 10%"></div>
+
+<!-- Slide counter -->
+<div id="slide-counter">01 / 15</div>
+
+<!-- ===== SLIDES ===== -->
+<div id="slides-wrapper">
+
+  <!-- SLIDE 1 — Cover -->
+  <div class="slide active" id="slide-1">
+    <div class="hero-logo">IRBIS</div>
+    <div class="tagline">Biz Signalmiz.</div>
+    <div class="neon-line"></div>
+    <p class="hero-desc">
+      <span>Texnologiya.</span> <span>Sovuqqonlik.</span> <span>Kuch.</span><br/>
+      Biz najot emasmiz — biz yangi davrning boshlanishimiz.<br/>
+      Qoidalar o'zgaryapti. Ularni yozayotganlar — <span>bizmiz</span>.
+    </p>
+  </div>
+
+  <!-- SLIDE 2 — Motivation: Real Holat -->
+  <div class="slide" id="slide-2">
+    <span class="slide-number">02 — Motivatsiya</span>
+    <h1>Kelajak Tayyor Emas.<br/>Uni Biz Quramiz.</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Kutish – <strong>mag'lubiyat</strong>. Moslashish – <strong>zaiflik</strong>.<br/>
+      Standartlarni o'zimiz belgilash vaqti keldi.<br/><br/>
+      <em>Hayotiy misol:</em> Steve Jobs garajda boshlagan. Elon Musk bankrotlik yoqasida turgan.
+      Ularni ajratib turgan narsa — <strong>kutmaslik va harakat qilish</strong>.<br/><br/>
+      Boshqalar tomoshabin bo'lganda, <em>biz jarayonni boshqaramiz</em>.
+      Bizning qurolimiz — bilim, strategiya va to'xtovsiz harakat.
+    </p>
+  </div>
+
+  <!-- SLIDE 3 — Muammo: Nima uchun ko'pchilik mag'lub bo'ladi -->
+  <div class="slide" id="slide-3">
+    <span class="slide-number">03 — Real Muammo</span>
+    <h1>Nima Uchun Ko'pchilik<br/>Mag'lub Bo'ladi?</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Har kuni minglab yoshlar <strong>motivatsiya video</strong> ko'radi — lekin hech narsa o'zgarmaydi.<br/><br/>
+      Sabab oddiy: ular <em>yolg'iz</em> ishlaydi. Muhit — o'sha-o'sha. Do'stlar — o'sha-o'sha.
+      Fikrlash tizimi — <strong>o'zgarishsiz</strong>.<br/><br/>
+      <em>Hayotiy misol:</em> YouTube'da "How to be successful" deb yozib, 3 soat video ko'rgan odam —
+      ertasiga yana o'sha divanda o'tiradi. Chunki <strong>tizim yo'q</strong>, jamoa yo'q, masuliyat yo'q.
+    </p>
+  </div>
+
+  <!-- SLIDE 4 — Birlashish Falsafasi (Sinergiya) -->
+  <div class="slide" id="slide-4">
+    <span class="slide-number">04 — Birlashish Falsafasi</span>
+    <h1>Yolg'iz vs Jamoa</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Yolg'iz aqlli odam <strong>tez yuradi</strong>. Jamoa esa <strong>uzoqqa boradi</strong>.<br/><br/>
+      IRBIS – shunchaki odamlar yig'indisi emas. Bu bir-birini <em>tekshiradigan</em>,
+      intellektual va amaliy jihatdan <strong>kuchaytiruvchi muhit</strong>.<br/><br/>
+      <em>Hayotiy misol:</em> PayPal asoschilari — "PayPal Mafia" — bir-birini kuchaytirib,
+      Tesla, LinkedIn, YouTube, Palantir kabi gigantlarni yaratdi. Chunki <strong>muhit — muvaffaqiyatning yarmi</strong>.
+    </p>
+    <div class="network-visual">
+      <svg>
+        <line x1="50%" y1="20%" x2="15%" y2="50%" />
+        <line x1="50%" y1="20%" x2="85%" y2="50%" />
+        <line x1="15%" y1="50%" x2="30%" y2="80%" />
+        <line x1="85%" y1="50%" x2="70%" y2="80%" />
+        <line x1="30%" y1="80%" x2="70%" y2="80%" />
+        <line x1="15%" y1="50%" x2="70%" y2="80%" />
+        <line x1="85%" y1="50%" x2="30%" y2="80%" />
+      </svg>
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — Blueprint -->
+  <div class="slide" id="slide-5">
+    <span class="slide-number">05 — Bizning Reja</span>
+    <h1>Harakat Strategiyasi<br/>va Ekosistema</h1>
+    <div class="neon-line"></div>
+    <p class="body-text" style="margin-bottom: 12px;">
+      Irbis Tribe uchta <strong>strategik ustun</strong> ustiga qurilgan.
+      Har bir ustun — alohida quvvat manbai.
+      Birgalikda esa ular <em>yengilmas tizim</em> hosil qiladi.
+    </p>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🎬</div>
+        <h3>KINOKOSMOS</h3>
+        <p>Ongni kengaytirish, tahlil va chuqur fikrlash qobiliyatini rivojlantirish</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🀄</div>
+        <h3>XITOY TILI</h3>
+        <p>Yangi madaniyat kodlarini o'zlashtirish va global fikrlashga o'tish</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🧭</div>
+        <h3>SAYOHAT</h3>
+        <p>Chegaralarni jismonan va ruhan kesib o'tish, real tajriba orttirish</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — Kinokosmos -->
+  <div class="slide" id="slide-6">
+    <span class="slide-number">06 — 1-Ustun</span>
+    <div class="feature-icon">🎞️</div>
+    <h1>KINOKOSMOS:<br/>Tahlil va Fikrlash</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Biz filmlarni shunchaki <strong>ko'rmaymiz</strong> — biz ularni <em>dekonstruksiya</em> qilamiz.<br/><br/>
+      G'oya, yashirin ma'nolar va inson ongi arxitekturasini o'rganamiz.
+      Har bir kadr — darslik. Har bir dialog — falsafa.<br/><br/>
+      <em>Hayotiy misol:</em> "The Social Network" filmini ko'rgan oddiy tomoshabin — "Yaxshi film" deydi.
+      Irbis a'zosi esa — Zuckerbergning <strong>strategik xatolari</strong>, do'stlik va ambitsiya orasidagi
+      to'qnashuv, va kompaniya qurish <strong>psixologiyasini</strong> tahlil qiladi.
+    </p>
+  </div>
+
+  <!-- SLIDE 7 — Kinokosmos amalda -->
+  <div class="slide" id="slide-7">
+    <span class="slide-number">07 — Kinokosmos Amalda</span>
+    <h1>Qanday Ishlaydi?</h1>
+    <div class="neon-line"></div>
+    <ul class="bullet-list">
+      <li>Har hafta <strong>1 ta film</strong> birgalikda ko'riladi</li>
+      <li>Har bir a'zo o'z <strong>tahlilini</strong> yozadi — g'oya, personaj, rejissyor qarori</li>
+      <li>Jamoa ichida <strong>munozara</strong> — fikrlar to'qnashuvi va yangi tushunchalar</li>
+      <li>Real biznes va hayotga <strong>parallel</strong> chiziladi — "Bu sahna mening loyihamdagi xatoni eslatdi"</li>
+      <li>Natija: <em>tanqidiy fikrlash</em>, nutq san'ati va <em>chuqur tushunish</em> malakasi</li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 8 — Chinese Language -->
+  <div class="slide" id="slide-8">
+    <span class="slide-number">08 — 2-Ustun</span>
+    <div class="feature-icon">🈶</div>
+    <h1>XITOY TILI:<br/>Yangi Dunyo Kodi</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      <strong>Til, madaniyat, intellekt.</strong> Bu faqat so'z yodlash emas —
+      butunlay boshqacha algoritm orqali <em>dunyoni anglash</em> vositasidir.<br/><br/>
+      Xitoy — <strong>dunyo iqtisodiyotining ikkinchi kuchi</strong>. Mandarin tilini bilish —
+      1.4 milliard insonga to'g'ridan-to'g'ri murojaat qilish imkoniyati.<br/><br/>
+      <em>Hayotiy misol:</em> Mark Zuckerberg Xitoy tilini o'rgandi va Pekin universitetida
+      <strong>butun ma'ruza</strong>ni mandarin tilida o'qidi. Natija? Xitoy bozori uchun Facebook'ga
+      yangi imkoniyatlar va <em>milliardlab foydalanuvchilar</em> bilan muloqot.
+    </p>
+  </div>
+
+  <!-- SLIDE 9 — Xitoy tili amalda -->
+  <div class="slide" id="slide-9">
+    <span class="slide-number">09 — Xitoy Tili Amalda</span>
+    <h1>Nima O'rganamiz?</h1>
+    <div class="neon-line"></div>
+    <ul class="bullet-list">
+      <li><strong>Iyerogliflar tizimi</strong> — har bir belgi ortidagi falsafa va tarix</li>
+      <li><strong>Kundalik muloqot</strong> — salom, savdo, sayohat, ishbilarmonlik iboralari</li>
+      <li><strong>Madaniy kodlar</strong> — nima uchun xitoyliklar "yo'q" deyish o'rniga "ko'rib chiqamiz" deydi</li>
+      <li><strong>Biznes xitoycha</strong> — shartnomalar, muzokaralar, Alibaba va WeChat ekosistemasi</li>
+      <li>Natija: <em>global fikrlash</em>, yangi bozorlar va <em>intellektual ustunlik</em></li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 10 — Need -->
+  <div class="slide" id="slide-10">
+    <span class="slide-number">10 — Ehtiyoj</span>
+    <h1>Oflayn Reallik va<br/>Jismoniy Sinergiya</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Ekran va nazariya <strong>yetarli emas</strong>. Telegram guruhida yozish — jamoani kuchli qilmaydi.<br/><br/>
+      Bizga qonni qizdiradigan, haqiqiy qiyinchiliklarda jamoani <em>toblayotgan</em>
+      va dunyoni <strong>amalda his qildiradigan</strong> umumiy platforma kerak.<br/><br/>
+      <em>Hayotiy misol:</em> Dunyo bo'ylab eng kuchli startap jamoalar —
+      Y Combinator, Techstars — <strong>yuzma-yuz uchrashuvlar</strong> orqali qurilgan.
+      Onlayn aloqa — asos. Ammo <strong>real uchrashuvlar — tsement</strong>.
+    </p>
+  </div>
+
+  <!-- SLIDE 11 — Travel Club -->
+  <div class="slide" id="slide-11">
+    <span class="slide-number">11 — YANGI</span>
+    <h1>SAYOHAT KLUBI:<br/>Chegaralarni Buzish</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Yashash muhitini almashtirish, kutilmagan sarguzashtlar va <strong>jamoaviy sinovlar</strong>.<br/><br/>
+      Biz endi nafaqat ongda, balki <em>real dunyoda ham birgamiz</em>.
+      Katta maqsadlar tomon amaliy qadam.<br/><br/>
+      <em>Hayotiy misol:</em> Samarqandga borgan guruh a'zosi aytdi: "Men o'z shaharimda
+      <strong>turistdek yashashni</strong> o'rgandim. Dunyoga qarashdagi o'zgarish —
+      eng qimmat sovg'a edi."
+    </p>
+    <div class="travel-visual">
+      <div class="mountain mountain-1"></div>
+      <div class="mountain mountain-2"></div>
+      <div class="horizon-line"></div>
+      <div class="silhouettes">
+        <div class="person"></div>
+        <div class="person"></div>
+        <div class="person"></div>
+        <div class="person"></div>
+        <div class="person"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12 — Sayohat Klubi Rejalari -->
+  <div class="slide" id="slide-12">
+    <span class="slide-number">12 — Sayohat Rejalari</span>
+    <h1>Qayerga va<br/>Nima Uchun?</h1>
+    <div class="neon-line"></div>
+    <ul class="bullet-list">
+      <li><strong>Ichki sayohatlar:</strong> Chimyon, Charvak, Samarqand, Buxoro — tariximizni his qilish</li>
+      <li><strong>Tog' yurishi:</strong> Jismoniy chidamlilik + jamoaviy ruh sinovi</li>
+      <li><strong>Xalqaro safar:</strong> Xitoy, Turkiya, Dubay — boshqa madaniyatni ichkaridan ko'rish</li>
+      <li><strong>Jamoaviy challenge:</strong> Har sayohatda — bir sinov, bir dars, bir yangi ko'nikma</li>
+      <li>Natija: <em>dunyoqarash kengayishi</em>, yangi do'stliklar va <em>hayotiy tajriba</em></li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 13 — Butunlik (Yaxlit Manzara) -->
+  <div class="slide" id="slide-13">
+    <span class="slide-number">13 — Butunlik</span>
+    <h1>Irbis Zanjiri</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      <strong>Kinokosmosda</strong> fikrlaymiz — aqlni charxlaymiz.<br/>
+      <strong>Xitoy tili</strong> orqali chegaralarni ochamiz — dunyoni kengaytiramiz.<br/>
+      <strong>Sayohat klubi</strong> orqali dunyoni amalda kashf etamiz — tajriba ortiramiz.<br/><br/>
+      <em>Bularning barchasi bitta mexanizm sifatida bizni yengilmas qiladi.</em>
+      Har biri alohida — kuchli. Birgalikda — <strong>to'xtatib bo'lmas kuch</strong>.
+    </p>
+    <div class="cycle-container">
+      <div class="cycle-ring"></div>
+      <div class="cycle-node cn1">🎬 KINO-<br/>KOSMOS</div>
+      <div class="cycle-node cn2">🀄 XITOY<br/>TILI</div>
+      <div class="cycle-node cn3">🧭 SAYOHAT<br/>KLUBI</div>
+      <span class="cycle-arrow ca1">→</span>
+      <span class="cycle-arrow ca2">→</span>
+      <span class="cycle-arrow ca3">→</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 14 — Irbis A'zosi Kim? -->
+  <div class="slide" id="slide-14">
+    <span class="slide-number">14 — Sen Kimsan?</span>
+    <h1>Irbis A'zosi<br/>— Bu Kim?</h1>
+    <div class="neon-line"></div>
+    <ul class="bullet-list">
+      <li><strong>O'zini rivojlantirishga chanqoq</strong> — shunchaki gap emas, amalda isbot qiluvchi</li>
+      <li><strong>Qiyinchilikdan qochmaydigan</strong> — muammoni imkoniyat deb ko'radigan</li>
+      <li><strong>Jamoani qadrlaydigan</strong> — boshqalarni ko'tarib, o'zi ham ko'tariladigan</li>
+      <li><strong>Yangilikka ochiq</strong> — xitoycha o'rganish, tog'ga chiqish, noma'lum filmni tahlil qilish</li>
+      <li><strong>Intizomli</strong> — har hafta ishtirok etadigan, o'z so'zining ustidan turadigan</li>
+    </ul>
+    <p class="body-text" style="margin-top: 16px;">
+      <em>Agar bu tavsif seni eslantirsa — sen allaqachon Irbissan.</em>
+    </p>
+  </div>
+
+  <!-- SLIDE 15 — CTA -->
+  <div class="slide" id="slide-15">
+    <span class="slide-number">15 — Xulosa va Chaqiriq</span>
+    <h1>Qaror Qabul Qilish<br/>Vaqti.</h1>
+    <div class="neon-line"></div>
+    <p class="body-text">
+      Bu faqat <strong>boshlanish</strong>. Kelajakni qurayotganlar shu yerda.<br/><br/>
+      Kim kiradi – <em>o'sadi</em>. Kim qoladi – <em>yetaklaydi</em>.<br/>
+      Kim hozir harakat qilsa – <em>ertaga natija oladi</em>.<br/><br/>
+      <strong>O'z o'rningni egalla.</strong> Vaqt kutmaydi. Imkoniyat takrorlanmaydi.
+    </p>
+    <a class="cta-btn" href="#">HARAKATNI BOSHLASH</a>
+  </div>
+
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="nav">
+  <button class="nav-arrow" id="prev-btn" aria-label="Previous slide">◀</button>
+  <div class="nav-dot active" data-slide="1"></div>
+  <div class="nav-dot" data-slide="2"></div>
+  <div class="nav-dot" data-slide="3"></div>
+  <div class="nav-dot" data-slide="4"></div>
+  <div class="nav-dot" data-slide="5"></div>
+  <div class="nav-dot" data-slide="6"></div>
+  <div class="nav-dot" data-slide="7"></div>
+  <div class="nav-dot" data-slide="8"></div>
+  <div class="nav-dot" data-slide="9"></div>
+  <div class="nav-dot" data-slide="10"></div>
+  <div class="nav-dot" data-slide="11"></div>
+  <div class="nav-dot" data-slide="12"></div>
+  <div class="nav-dot" data-slide="13"></div>
+  <div class="nav-dot" data-slide="14"></div>
+  <div class="nav-dot" data-slide="15"></div>
+  <button class="nav-arrow" id="next-btn" aria-label="Next slide">▶</button>
+</nav>
+
+<script>
+  // ===== PARTICLES =====
+  (function initParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 3 + 1;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (Math.random() * 10 + 8) + 's';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      if (Math.random() > 0.5) p.style.background = 'var(--neon-magenta)';
+      container.appendChild(p);
+    }
+  })();
+
+  // ===== SLIDE ENGINE =====
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+  const counter = document.getElementById('slide-counter');
+  const progress = document.getElementById('progress');
+  const total = slides.length;
+  let current = 0;
+
+  function goTo(index) {
+    if (index < 0 || index >= total || index === current) return;
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    counter.textContent =
+      String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    progress.style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('next-btn').addEventListener('click', () => goTo(current + 1));
+  document.getElementById('prev-btn').addEventListener('click', () => goTo(current - 1));
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => goTo(parseInt(dot.dataset.slide) - 1));
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); goTo(current + 1);
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); goTo(current - 1);
+    }
+  });
+
+  // Touch / swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? goTo(current + 1) : goTo(current - 1);
+    }
+  });
+
+  // Mouse wheel
+  let wheelCooldown = false;
+  document.addEventListener('wheel', e => {
+    if (wheelCooldown) return;
+    wheelCooldown = true;
+    if (e.deltaY > 0) goTo(current + 1);
+    else goTo(current - 1);
+    setTimeout(() => { wheelCooldown = false; }, 800);
+  }, { passive: true });
+</script>
+</body>
+</html>
